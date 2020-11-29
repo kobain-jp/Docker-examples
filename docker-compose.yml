@@ -1,8 +1,20 @@
 version: "3.7"
 services:
-  nginx:
-    build: ./nginx-sample
+  nginx-example:
+    build: ./nginx-example
     ports:
-      - "81:80"
+      - "82:80"
     volumes:
-      - ./nginx-sample/html:/usr/share/nginx/html
+      - ./nginx-example/html:/usr/share/nginx/html
+      - ./nginx-example/conf.d:/etc/nginx/conf.d
+    depends_on: 
+      - node-example
+
+  node-example:
+    image: node:12-alpine
+    command: sh -c "npm install && node server.js"
+    working_dir: /node-example    
+    volumes:
+      - ./node-example:/node-example
+
+  
