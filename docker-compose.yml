@@ -1,0 +1,8 @@
+version: "3.7"
+services:
+  nginx:
+    build: ./nginx-sample
+    ports:
+      - "81:80"
+    volumes:
+      - ./nginx-sample/html:/usr/share/nginx/html
