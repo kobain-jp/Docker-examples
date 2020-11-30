@@ -3,7 +3,7 @@ services:
   nginx-example:
     build: ./nginx-example
     ports:
-      - "82:80"
+      - "80:80"
     volumes:
       - ./nginx-example/html:/usr/share/nginx/html
       - ./nginx-example/conf.d:/etc/nginx/conf.d
@@ -24,6 +24,13 @@ services:
     environment:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: admin
+#    volumes:
+#      - ./postgre-example/data:/var/lib/postgresql/data
+
+  springboot-production-example:
+    build: ./springboot-production-example
+    ports:
+      - 8080:8080
     volumes:
-      - ./docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d
+      - ./springboot-production-example:/springboot-production-example
   
