@@ -1,36 +1,50 @@
 version: "3.7"
 services:
-  nginx-example:
-    build: ./nginx-example
-    ports:
-      - "80:80"
-    volumes:
-      - ./nginx-example/html:/usr/share/nginx/html
-      - ./nginx-example/conf.d:/etc/nginx/conf.d
-    depends_on: 
-      - node-example
+#  nginx-example:
+#    build: ./nginx-example
+#    ports:
+#      - "80:80"
+#    volumes:
+#      - ./nginx-example/html:/usr/share/nginx/html
+#      - ./nginx-example/conf.d:/etc/nginx/conf.d
+#    depends_on: 
+#      - node-example
 
-  node-example:
-    image: node:12-alpine
-    command: sh -c "npm install && node server.js"
-    working_dir: /node-example    
-    volumes:
-      - ./node-example:/node-example
+#  node-example:
+#    image: node:12-alpine
+#    command: sh -c "npm install && node server.js"
+#    working_dir: /node-example    
+#    volumes:
+#      - ./node-example:/node-example
 
-  postgre-example:
-    build: ./postgre-example
-    ports:
-      - 5433:5432
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+#  postgre-example:
+#    build: ./postgre-example
+#    ports:
+#      - 5433:5432
+#    environment:
+#      POSTGRES_USER: admin
+#      POSTGRES_PASSWORD: admin
 #    volumes:
 #      - ./postgre-example/data:/var/lib/postgresql/data
 
-  springboot-production-example:
-    build: ./springboot-production-example
+#  springboot-production-example:
+#    build: ./springboot-production-example
+#    ports:
+#      - 8081:8080
+#    volumes:
+#      - ./springboot-production-example:/springboot-production-example
+
+  java:
+    image: openjdk:11
+    restart: always
     ports:
-      - 8080:8080
-    volumes:
-      - ./springboot-production-example:/springboot-production-example
+      - 8080:8080 
+    tty: true
+    depends_on:
+      - oracle-example
+
+  oracle-example:
+    image: store/oracle/database-enterprise:12.2.0.1
+    
+
   
