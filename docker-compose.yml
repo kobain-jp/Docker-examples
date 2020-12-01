@@ -24,8 +24,8 @@ services:
 #    environment:
 #      POSTGRES_USER: admin
 #      POSTGRES_PASSWORD: admin
-#    volumes:
-#      - ./postgre-example/data:/var/lib/postgresql/data
+ #   volumes:
+ #     - ./postgre-example/data:/var/lib/postgresql/data
 
 #  springboot-production-example:
 #    build: ./springboot-production-example
@@ -34,17 +34,35 @@ services:
 #    volumes:
 #      - ./springboot-production-example:/springboot-production-example
 
-  java:
-    image: openjdk:11
-    restart: always
-    ports:
-      - 8080:8080 
-    tty: true
-    depends_on:
-      - oracle-example
+#  java:
+#    image: openjdk:11
+#    restart: always
+#    ports:
+#      - 8080:8080 
+#    tty: true
+#    depends_on:
+#      - oracle-example
 
   oracle-example:
     image: store/oracle/database-enterprise:12.2.0.1
+    volumes:
+      - .oracle-example/data:/ORCL
+    ports:
+      - 1521:1521
+
+#  java:
+#    image: openjdk:11
+#    restart: always
+#    ports:
+#      - 8080:8080 
+#    tty: true
+#    depends_on:
+#      - oracle-example
+
+#  tomcat-example:
+#    build: ./tomcat-example
+#    ports:
+#      - 8080:8080    
     
 
   
