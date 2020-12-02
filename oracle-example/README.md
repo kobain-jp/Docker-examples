@@ -186,9 +186,38 @@ SHUTDOWN IMMEDIATE
 
 impdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=developer directory=ot_external_pdb dumpfile=schemas.dmp  logfile=imp-schemas.log 
 
+init.ora
 
 
+// memo
+impdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=common directory=ot_external_pdb dumpfile=common.dmp  logfile=imp-common3.log REMAP_TABLESPACE=USR_COMMON:USERS REMAP_TABLESPACE=USR_COMMON_INDEX:USERS
 
+### statspack
+https://qiita.com/mkyz08/items/729545aab4751f3002d0
+https://www.sql-dbtips.com/statspack/snapshot/
+statspack install
 
+sqlplus / as sysdba
+@?/rdbms/admin/spcreate.sql
+perfstat_passwordに値を入力してください: manager
+default_tablespaceに値を入力してください: users
+temporary_tablespaceに値を入力してください: temp
+
+statspack設定
+
+SQL> connect perfstat/manager
+SQL> execute statspack.modify_statspack_parameter(i_snap_level=> 7)
+
+snapshot取得
+execute statspack.snap(i_snap_level=> 7)
+
+statspack一覧
+select snap_id, to_char(snap_time, 'yyyy-mm-dd hh24:mi:ss') snap_time from stats$snapshot order by snap_id;
+
+レポート取得
+@?/rdbms/admin/spreport.sql
+
+### init.oraの場所
+u01/app/oracle/product/12.2.0/dbhome_1/dbs/initORCLCDB.ora;
 
 
