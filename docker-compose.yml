@@ -46,7 +46,7 @@ services:
   oracle-example:
     image: store/oracle/database-enterprise:12.2.0.1
     volumes:
-      - .oracle-example/data:/ORCL
+      - ./oracle-example/data:/ORCL
     ports:
       - 1521:1521
 

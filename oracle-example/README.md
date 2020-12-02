@@ -6,9 +6,9 @@ https://qiita.com/KenjiOtsuka/items/97517fdd3406627cf8a7
 // container作成　＋　起動
 docker run -it -d --name oracle-db -p 1521:1521 -p 5500:5500 store/oracle/database-enterprise:12.2.0.1 
 
-// データのマウント
+// データのマウント 失敗
 cd oracle-example
-docker run -it -d --name oracle-db -p 1521:1521 -p 5500:5500 store/oracle/database-enterprise:12.2.0.1 -v ./data:/ORCL
+docker run -it -d --name oracle-db -p 1521:1521 -p 5500:5500 store/oracle/database-enterprise:12.2.0.1 -v $(pwd)/data:/ORCL
 
 // container起動
 docker start oracle-db
@@ -39,15 +39,10 @@ SQL> grant create sequence to developer;
 SQL> alter user developer quota unlimited on USERS;
 
 // 作成した接続に接続
-SQL> conn developer/developer@127.0.0.1/rclopdb1.localdomain   
+SQL> conn developer/developer@127.0.0.1/orclpdb1.localdomain   
 SQL> conn developer2/developer2@127.0.0.1/rclopdb1.localdomain   
 
-テーブル作成
-SQL> CREATE TABLE book(book_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY, isbn NUMBER, title NVARCHAR2(50), author NVARCHAR2(50), release_date DATE);
-
-SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 1',9784088716114,'井上雄彦',TO_DATE('1991/02/08','yyyy/mm/dd'));
-SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 2',9784088716121,'井上雄彦',TO_DATE('1991/06/10','yyyy/mm/dd'));
-SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('リアル 1',9784088761435,'井上雄彦',TO_DATE('2001/03/19','yyyy/mm/dd'));
+conn system/manager@127.0.0.1/orclpdb1.localdomain 
 
 
 mkdir /u01/app/dmpdir/
@@ -66,6 +61,8 @@ https://oracle-chokotto.com/ora_import_impdp.html
 スキーマ単位　エクスポート
 expdp developer/developer@127.0.0.1/orclpdb1.localdomain directory=dp_dir schemas=developer;
 
+expdp system/manager
+
 スキーマ単位　インポート
 impdp developer/developer@127.0.0.1/orclpdb1.localdomain schemas=developer directory=dp_dir table_exists_action=replace dumpfile=expdat.dmp 
 
@@ -77,8 +74,121 @@ impdp developer2/developer2@127.0.0.1/orclpdb1.localdomain schemas=developer dir
 
 docker exec oracle-db pg_dumpall -U [user name] > dump.sql
 
-azu
-https://twitter.com/azu_re
+
+
+###  how to start up / shutdown. 
+
+ローカル・データベース・ユーザーへの接続
+connect / as sysdba
+STARTUP
+SHUTDOWN IMMEDIATE
+
+### 起動後
+
+接続
+sqlplus sys/manager as sysdba
+https://qiita.com/tpusuke/items/7af097580f239ba28b9d
+
+インスタンス名確認　DB_SID
+SQL> SELECT INSTANCE_NAME FROM V$INSTANCE;
+>ORCLCDB
+
+pdb確認　DB_PDB
+SQL> select PDB_NAME from dba_pdbs
+
+テーブルスペース確認
+SQL> select TABLESPACE_NAME from dba_tablespaces
+
+ユーザ確認
+SQL> gselect username from dba_users
+
+サービス名称確認
+lsnrctl services
+>ORCLCDB.localdomain
+
+### ユーザ作成とデータ作成
+
+SQL> alter session set container=ORCLPDB1;
+
+// userを作成
+SQL> create user developer identified by developer;
+
+// sessionを作り、データベースに接続を許可するシステム権限を付与する
+SQL> grant create session to developer;
+
+// テーブル作成権限
+SQL> grant create table to developer;
+
+SQL> grant create sequence to developer;
+
+SQL> alter user developer quota unlimited on USERS;
+
+// 作成したユーザでpdb1で接続
+conn developer/developer@127.0.0.1/orclpdb1.localdomain
+*conn developer/developer as sysdba <= CDB
+
+テーブル作成
+CREATE TABLE book(book_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY, isbn NUMBER, title NVARCHAR2(50), author NVARCHAR2(50), release_date DATE);
+
+INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 1',9784088716114,'井上雄彦',TO_DATE('1991/02/08','yyyy/mm/dd'));
+
+INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 2',9784088716121,'井上雄彦',TO_DATE('1991/06/10','yyyy/mm/dd'));
+
+INSERT INTO book(title, isbn,  author, release_date) VALUES ('リアル 1',9784088761435,'井上雄彦',TO_DATE('2001/03/19','yyyy/mm/dd'));
+
+### データエクスポート/インポート
+https://www.oracletutorial.com/oracle-administration/oracle-expdp/
+
+フォルダ作成
+cd ORCL
+mkdir ot_external
+
+sqlplus system/manager as sysdba
+CREATE DIRECTORY ot_external AS '/ORCL/ot_external';
+
+全てバックアップ
+expdp \"sys/manager as sysdba\" full=y directory=ot_external dumpfile=full.dmp  logfile=full.log
+
+PDB1のDBスキーマ
+cd ORCL
+mkdir ot_external_pdb
+
+conn system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain
+CREATE DIRECTORY ot_external_pdb AS '/ORCL/ot_external_pdb';
+exit;
+
+expdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=developer directory=ot_external_pdb dumpfile=schemas.dmp  logfile=exp-schemas.log 
+
+
+conn developer/developer@127.0.0.1/orclpdb1.localdomain
+
+//データ削除
+conn system/manager as sysdba
+drop table book;
+conn developer/developer@127.0.0.1/orclpdb1.localdomain
+drop table book;
+
+//復旧
+全て
+impdp \"sys/manager as sysdba\" directory=ot_external dumpfile=full.dmp logfile=imp-full.log 
+
+PDB1のスキーマごとにインポート
+impdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=developer directory=ot_external_pdb dumpfile=schemas.dmp  logfile=imp-schemas.log 
+
+conn system/manager as sysdba
+alter session set container=ORCLPDB1;
+DROP USER developer CASCADE; 
+
+ローカル・データベース・ユーザーへの接続
+connect / as sysdba
+STARTUP
+SHUTDOWN IMMEDIATE
+
+impdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=developer directory=ot_external_pdb dumpfile=schemas.dmp  logfile=imp-schemas.log 
+
+
+
+
 
 
 
