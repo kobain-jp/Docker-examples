@@ -188,10 +188,6 @@ impdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=developer directo
 
 init.ora
 
-
-// memo
-impdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain schemas=common directory=ot_external_pdb dumpfile=common.dmp  logfile=imp-common3.log REMAP_TABLESPACE=USR_COMMON:USERS REMAP_TABLESPACE=USR_COMMON_INDEX:USERS
-
 ### statspack
 https://qiita.com/mkyz08/items/729545aab4751f3002d0
 https://www.sql-dbtips.com/statspack/snapshot/
@@ -220,4 +216,22 @@ select snap_id, to_char(snap_time, 'yyyy-mm-dd hh24:mi:ss') snap_time from stats
 ### init.oraの場所
 u01/app/oracle/product/12.2.0/dbhome_1/dbs/initORCLCDB.ora;
 
+lsnrctl stop
+lsnrctl start
 
+### pdbごとの起動/停止
+sqlplus / as sysdba
+
+show pdbs
+show con_name
+
+alter pluggable database ORCLPDB1 close; 
+alter pluggable database ORCLPDB1 open; 
+
+## pdb丸ごとexport
+expdp system/Oradoc_db1@127.0.0.1/orclpdb1.localdomain full=y directory=ot_external_pdb dumpfile=full-pdb.dmp  logfile=exp-full-pdb.log 
+
+//起動プロセス確認
+ps -e ax|grep -i ORCLPDB1
+
+select INSTANCE_NUMBER,INSTANCE_NAME,STATUS from v$instance
