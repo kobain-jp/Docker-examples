@@ -27,3 +27,9 @@ cat dump.sql | docker exec -i docker-examples_postgre-example_1 psql -U admin
 
 他の環境からimportする方法
 
+
+Postgreの情報
+SELECT version()
+
+パラメータ
+SELECT name, setting FROM  pg_settings  where name ='max_connections' 

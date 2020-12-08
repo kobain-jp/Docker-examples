@@ -43,3 +43,6 @@ oracle-example/data/
 
 ### Mac
 .DS_Store
+
+## postgres
+postgres-example/data/
