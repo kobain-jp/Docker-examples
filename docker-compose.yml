@@ -1,6 +1,7 @@
 version: "3.7"
 services:
 #  nginx-example:
+#    container_name: nginx-example
 #    build: ./nginx-example
 #    ports:
 #      - "80:80"
@@ -43,12 +44,12 @@ services:
 #    depends_on:
 #      - oracle-example
 
-  oracle-example:
-    image: store/oracle/database-enterprise:12.2.0.1
-    volumes:
-      - ./oracle-example/data:/ORCL
-    ports:
-      - 1521:1521
+#  oracle-example:
+#    image: store/oracle/database-enterprise:12.2.0.1
+#    volumes:
+#      - ./oracle-example/data:/ORCL
+#    ports:
+#      - 1521:1521
 
 #  java:
 #    image: openjdk:11
@@ -63,6 +64,25 @@ services:
 #    build: ./tomcat-example
 #    ports:
 #      - 8080:8080    
+
+  jenkins-master-example:
+    container_name: jenkins-master-example
+    image: jenkins/jenkins:lts
+    volumes:
+      - ./jenkins-example/jenkins_home:/var/jenkins_home 
+    ports:
+      - 18080:8080
+      - 50000:50000
+
+  jenkins-slave-example:
+    container_name: jenkins-slave-example
+    image: jenkinsci/ssh-slave
+    environment:
+      - JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCNfhUNWJFFTf3H3zESmcAnPaMZfDVbdKPJF0u0ZwP6dBa6oxnIwFnLQ7M7ERoZN0jLKJkApnYc17k1J1j3K2Z/pNhYEGtXsVy5Mxqlta0lYqbU2xyrOd6UEixs2+WtYKTi/5VtYenE3mrusIaGLiO1eCvfuQ1XFhlvqWZIK9nUp/3BMMhYVEgzrQ5DHX6KlrkHLwM+ajK87dALM79JjnqwFr0QCzZVP9CX6886qk1YhOAw4XD8x66RanHuwTTaDnTv56fJxyUnZt5DXuW1SkFpvSTzcIgBOSIgf4MrIqosKy24GNFfDMNZOY0OOyaPd89/X1IAUJptu229MSO/OOL 
+
+
+
+
     
 
   

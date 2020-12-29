@@ -46,3 +46,6 @@ oracle-example/data/
 
 ## postgres
 postgres-example/data/
+
+## jenkins-example
+jenkins-example/jenkins_home
