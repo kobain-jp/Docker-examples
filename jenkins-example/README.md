@@ -55,8 +55,11 @@ Advanced
 /usr/local/openjdk-8/bin/java
 
 
+### tutorial
+https://qiita.com/ys1230415/items/51b36fedf1434e877765
 
+install docker plugin
+https://plugins.jenkins.io/docker-workflow/
 
-
-
+https://daksh-jain00.medium.com/docker-in-docker-or-docker-outside-of-docker-think-twice-8511347a5f7a
 

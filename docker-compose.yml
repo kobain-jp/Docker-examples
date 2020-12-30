@@ -66,19 +66,20 @@ services:
 #      - 8080:8080    
 
   jenkins-master-example:
-    container_name: jenkins-master-example
-    image: jenkins/jenkins:lts
+    container_name: jenkins-example
+    build: ./jenkins-example
     volumes:
       - ./jenkins-example/jenkins_home:/var/jenkins_home 
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - 18080:8080
       - 50000:50000
 
-  jenkins-slave-example:
-    container_name: jenkins-slave-example
-    image: jenkinsci/ssh-slave
-    environment:
-      - JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCNfhUNWJFFTf3H3zESmcAnPaMZfDVbdKPJF0u0ZwP6dBa6oxnIwFnLQ7M7ERoZN0jLKJkApnYc17k1J1j3K2Z/pNhYEGtXsVy5Mxqlta0lYqbU2xyrOd6UEixs2+WtYKTi/5VtYenE3mrusIaGLiO1eCvfuQ1XFhlvqWZIK9nUp/3BMMhYVEgzrQ5DHX6KlrkHLwM+ajK87dALM79JjnqwFr0QCzZVP9CX6886qk1YhOAw4XD8x66RanHuwTTaDnTv56fJxyUnZt5DXuW1SkFpvSTzcIgBOSIgf4MrIqosKy24GNFfDMNZOY0OOyaPd89/X1IAUJptu229MSO/OOL 
+#  jenkins-slave-example:
+#    container_name: jenkins-slave-example
+#    image: jenkinsci/ssh-slave
+#    environment:
+#      - JENKINS_SLAVE_SSH_PUBKEY=ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDCNfhUNWJFFTf3H3zESmcAnPaMZfDVbdKPJF0u0ZwP6dBa6oxnIwFnLQ7M7ERoZN0jLKJkApnYc17k1J1j3K2Z/pNhYEGtXsVy5Mxqlta0lYqbU2xyrOd6UEixs2+WtYKTi/5VtYenE3mrusIaGLiO1eCvfuQ1XFhlvqWZIK9nUp/3BMMhYVEgzrQ5DHX6KlrkHLwM+ajK87dALM79JjnqwFr0QCzZVP9CX6886qk1YhOAw4XD8x66RanHuwTTaDnTv56fJxyUnZt5DXuW1SkFpvSTzcIgBOSIgf4MrIqosKy24GNFfDMNZOY0OOyaPd89/X1IAUJptu229MSO/OOL 
 
 
 
