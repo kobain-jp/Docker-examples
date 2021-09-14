@@ -109,7 +109,7 @@ SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 2',
 SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('リアル 1',9784088761435,'井上雄彦',TO_DATE('2001/03/19','yyyy/mm/dd'));
 ```
 
-外部から接続
+外部から接続例
 
 springboot
 
