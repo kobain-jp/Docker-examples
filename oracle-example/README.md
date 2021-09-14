@@ -134,6 +134,17 @@ User name *:developer
 Password *:developer
 ```
 
+jdbc driver
+
+```
+    final String URL = "jdbc:oracle:thin:@localhost:1521/orclpdb1.localdomain";
+		final String USER = "developer";
+		final String PASS = "developer";
+
+		try (Connection conn = DriverManager.getConnection(URL,USER,PASS);
+
+```
+
 ### DB起動/停止
 
 CDB起動/停止
