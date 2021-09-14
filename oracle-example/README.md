@@ -36,12 +36,15 @@ SQL> select PDB_NAME from dba_pdbs
 ```
 
 // テーブルスペース確認
+
 `SQL> select TABLESPACE_NAME from dba_tablespaces`
 
 // ユーザ確認
+
 `SQL> gselect username from dba_users`
 
 // init.oraの場所
+
 `u01/app/oracle/product/12.2.0/dbhome_1/dbs/initORCLCDB.ora;`
 
 // 作業用ディレクトリ
@@ -144,9 +147,12 @@ CDB起動/停止
 
 PDB起動/停止
 
-`sqlplus / as sysdba`
+```
+sqlplus / as sysdba
 
-`alter pluggable database ORCLPDB1 close;`
+alter pluggable database ORCLPDB1 close;
+
+```
 
 起動
 
