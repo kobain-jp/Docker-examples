@@ -101,10 +101,13 @@ sessionを作り、データベースに接続を許可するシステム権限�
 `SQL> conn developer/developer@127.0.0.1/orclpdb1.localdomain`
 
 データを作成
+
+```
 SQL> CREATE TABLE book(book_id NUMBER GENERATED ALWAYS AS IDENTITY NOT NULL PRIMARY KEY, isbn NUMBER, title NVARCHAR2(50), author NVARCHAR2(50), release_date DATE);
 SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 1',9784088716114,'井上雄彦',TO_DATE('1991/02/08','yyyy/mm/dd'));
 SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('SLAM DUNK 2',9784088716121,'井上雄彦',TO_DATE('1991/06/10','yyyy/mm/dd'));
 SQL> INSERT INTO book(title, isbn,  author, release_date) VALUES ('リアル 1',9784088761435,'井上雄彦',TO_DATE('2001/03/19','yyyy/mm/dd'));
+```
 
 外部から接続
 
