@@ -65,15 +65,15 @@ services:
 #    ports:
 #      - 8080:8080    
 
-  jenkins-master-example:
-    container_name: jenkins-example
-    build: ./jenkins-example
-    volumes:
-      - ./jenkins-example/jenkins_home:/var/jenkins_home 
-      - /var/run/docker.sock:/var/run/docker.sock
-    ports:
-      - 18080:8080
-      - 50000:50000
+#  jenkins-master-example:
+#    container_name: jenkins-example
+#    build: ./jenkins-example
+#    volumes:
+#      - ./jenkins-example/jenkins_home:/var/jenkins_home 
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    ports:
+#      - 18080:8080
+#      - 50000:50000
 
 #  jenkins-slave-example:
 #    container_name: jenkins-slave-example
